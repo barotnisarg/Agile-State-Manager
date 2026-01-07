@@ -1,6 +1,6 @@
 const addTaskButton = document.querySelector("#addTaskButton");
-const modalOverlay = document.querySelector("#modalOverlay"); // CHANGE: Select new overlay
-const closeModalButton = document.querySelector("#closeModal"); // CHANGE: Select cancel button
+const modalOverlay = document.querySelector("#modalOverlay"); 
+const closeModalButton = document.querySelector("#closeModal"); 
 const cardStates = document.querySelectorAll(".state");
 const form = document.querySelector("form");
 const taskTitle = document.querySelector("#taskTitle");
@@ -16,18 +16,14 @@ let cardCounter = 0;
 const maxInProgress = 3;
 const maxInReview = 2;
 
-// CHANGE: Function to toggle modal
 const toggleModal = () => {
   modalOverlay.classList.toggle("hidden");
 };
 
-// CHANGE: Open modal on "Add Task" click
 addTaskButton.addEventListener("click", toggleModal);
 
-// CHANGE: Close modal on "Cancel" click
 closeModalButton.addEventListener("click", toggleModal);
 
-// CHANGE: Close modal if clicking outside the form (on the blurred background)
 modalOverlay.addEventListener("click", (e) => {
   if (e.target === modalOverlay) {
     toggleModal();
@@ -82,13 +78,10 @@ form.addEventListener("submit", (e) => {
 
   backlogState.appendChild(div);
   saveToLocalStorage();
-  
-  // CHANGE: Close the modal after adding and reset form
+
   toggleModal(); 
   form.reset();
 });
-
-// === REST OF THE LOGIC REMAINS UNCHANGED ===
 
 cardStates.forEach((state) => {
   state.addEventListener("dragover", (e) => {
@@ -215,9 +208,6 @@ window.addEventListener("load", () => {
   savedTasks.forEach(task => {
     taskTitle.value = task.title;
     taskDescription.value = task.desc;
-    // We can simulate submit or manually add
-    // Simulating submit is tricky with the new modal logic because it might toggle the modal off unnecessarily
-    // So we manually create the card logic here to avoid UI flickering:
     
     const div = document.createElement("div");
     const h2 = document.createElement("h2");
@@ -264,4 +254,5 @@ window.addEventListener("load", () => {
 
     document.querySelector(`#${task.state}`).appendChild(div);
   });
+
 });
