@@ -11,7 +11,7 @@ body {
   color: #e5e7eb;
 }
 
-/* ===== CHANGE: NAVBAR STYLES ===== */
+/* ===== NAVBAR STYLES ===== */
 nav {
     width: 100%;
     background-color: #1e293b;
@@ -53,28 +53,25 @@ nav h1 {
   margin-top: 10px;
 }
 
-/* ===== CHANGE: MODAL / FORM STYLES ===== */
-/* This controls the background blur and centering */
+/* ===== MODAL / FORM STYLES ===== */
 #modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Dark transparent background */
-    backdrop-filter: blur(8px); /* This adds the blur effect */
+    background-color: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(8px); 
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
-/* Class to hide the modal */
 .hidden {
     display: none !important;
 }
 
-/* The actual white/dark box for the form */
 .modalContent {
     background-color: #1e293b;
     padding: 30px;
@@ -143,15 +140,13 @@ form button:hover {
   gap: 10px;
 }
 
-/* CHANGE: REMOVED .state::before */
-/* CHANGE: Style the HTML text (h2) to be Blue */
 .state h2 {
     text-transform: uppercase;
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #38bdf8; /* Blue color applied to the text */
-    pointer-events: none; /* Prevents dragging the title */
+    color: #38bdf8; 
+    pointer-events: none; 
 }
 
 /* ===== DRAG ACTIVE STATE ===== */
@@ -180,8 +175,8 @@ form button:hover {
 .card h2 {
   font-size: 16px;
   margin-bottom: 6px;
-  color: #e5e7eb; /* Keep card titles white */
-  text-transform: none; /* Reset uppercase from state inheritance */
+  color: #e5e7eb; 
+  text-transform: none;
 }
 
 .card h3 {
@@ -235,4 +230,5 @@ form button:hover {
 .state::-webkit-scrollbar-thumb {
   background-color: #334155;
   border-radius: 6px;
+
 }
