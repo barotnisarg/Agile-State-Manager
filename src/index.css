@@ -55,6 +55,11 @@ body,
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 15% 0%,   rgba(88,166,255,0.08)  0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 90%,   rgba(163,113,247,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 50% 50%,   rgba(63,185,80,0.03)   0%, transparent 60%);
+  background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
   font-size: 14px;
@@ -68,21 +73,54 @@ body {
   justify-content: space-between;
   gap: 16px;
   padding: 0 2rem;
-  height: 60px;
+  height: 64px;
   background: var(--surface);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  /* gradient accent line at the bottom */
   border-bottom: 1px solid var(--border);
+  box-shadow:
+    0 1px 0 0 rgba(88,166,255,0.12),
+    0 4px 20px rgba(0,0,0,0.25);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
+/* subtle gradient shimmer behind navbar */
+.navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(88,166,255,0.04) 0%,
+    transparent 40%,
+    rgba(163,113,247,0.03) 100%);
+  pointer-events: none;
+}
+
 .navbar__title {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
   flex-shrink: 0;
+  background: linear-gradient(135deg, #58a6ff 0%, #a371f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/* inline SVG logo — drop shadow so it pops off dark and light backgrounds */
+.navbar__logo {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.45));
+  transition: filter 0.2s, transform 0.2s;
+}
+.navbar__title:hover .navbar__logo {
+  filter: drop-shadow(0 0 12px rgba(163, 113, 247, 0.6));
+  transform: rotate(-4deg) scale(1.08);
 }
 
 /* right-side group: toggle + add button */
@@ -270,42 +308,38 @@ body {
 .stats-bar {
   display: flex;
   align-items: center;
-  gap: 0;
   padding: 0 2rem;
-  height: 52px;
-  background: var(--surface-solid);
+  height: 48px;
+  background: color-mix(in srgb, var(--surface-solid) 80%, var(--bg));
   border-bottom: 1px solid var(--border);
   overflow-x: auto;
+  /* gradient accent line across the top */
+  box-shadow: inset 0 1px 0 rgba(88,166,255,0.08);
 }
 
 .stats-bar__stat {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  padding: 0 20px;
-  min-width: 80px;
+  align-items: baseline;      /* horizontal layout: number + label side by side */
+  gap: 5px;
+  padding: 0 18px;
 }
 
 .stats-bar__divider {
   width: 1px;
-  height: 28px;
+  height: 20px;
   background: var(--border);
   flex-shrink: 0;
 }
 
 .stats-bar__label {
-  font-size: 10px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 11px;
+  font-weight: 400;
   color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .stats-bar__value {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1;
@@ -315,31 +349,30 @@ body {
 .stats-bar__value--danger  { color: var(--danger); }
 .stats-bar__value--success { color: var(--success); }
 
-/* completion stat has its own wider layout with a progress bar */
+/* completion stat — sits right of dividers, takes remaining space */
 .stats-bar__completion {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  padding: 0 20px;
-  min-width: 160px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
   flex: 1;
-  max-width: 240px;
+  max-width: 280px;
+  margin-left: auto;       /* push to the right end */
 }
 
 .stats-bar__completion-header {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.stats-bar__completion-header .stats-bar__value {
-  font-size: 14px;
-  font-weight: 700;
-}
+.stats-bar__completion-header .stats-bar__label { font-size: 11px; }
+.stats-bar__completion-header .stats-bar__value { font-size: 14px; }
 
 .stats-bar__progress-track {
-  height: 5px;
+  flex: 1;
+  height: 4px;
   background: var(--border);
   border-radius: 99px;
   overflow: hidden;
@@ -347,9 +380,9 @@ body {
 
 .stats-bar__progress-fill {
   height: 100%;
-  background: var(--success);
+  background: linear-gradient(90deg, var(--accent), var(--success));
   border-radius: 99px;
-  transition: width 0.4s ease;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   min-width: 0;
 }
 
@@ -397,11 +430,14 @@ body {
 /* ── Board layout ─────────────────────────────────────────────────────────── */
 .board {
   display: flex;
-  gap: 16px;
-  padding: 24px;
+  gap: 14px;
+  padding: 20px 24px 24px;
+  /* fill remaining viewport — navbar(64) + stats(48) = 112px */
+  min-height: calc(100vh - 112px);
+  height: calc(100vh - 112px);
+  align-items: stretch;
   overflow-x: auto;
-  min-height: calc(100vh - 60px);
-  align-items: flex-start;
+  overflow-y: hidden;
 }
 
 /* ── Column accent palette ────────────────────────────────────────────────── */
@@ -417,78 +453,107 @@ body {
 
 /* ── Column ───────────────────────────────────────────────────────────────── */
 .column {
-  flex: 0 0 240px;
+  flex: 1 1 0;              /* equal width, all 5 columns share the space */
+  min-width: 200px;         /* don't shrink below this before scrolling */
   background: var(--surface);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  height: 100%;
   transition: border-color 0.2s, box-shadow 0.2s;
-  min-height: 200px;
-  /* colored top accent bar */
   border-top: 2px solid var(--col-color);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--col-color) 20%, transparent),
+    0 2px 8px rgba(0,0,0,0.2);
 }
 
 .column--drag-over {
   border-color: var(--col-color);
   box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--col-color) 30%, transparent),
-    0 8px 24px rgba(0,0,0,0.3);
+    0 0 0 2px color-mix(in srgb, var(--col-color) 35%, transparent),
+    0 8px 32px rgba(0,0,0,0.35),
+    inset 0 1px 0 color-mix(in srgb, var(--col-color) 30%, transparent);
 }
 
 .column__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px 10px;
+  padding: 14px 16px 11px;
   border-bottom: 1px solid var(--border);
-  /* very faint column-color wash behind the header */
   background: var(--col-color-bg);
-  border-radius: 10px 10px 0 0;
+  border-radius: 12px 12px 0 0;
+  flex-shrink: 0;
 }
 
 .column__title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  /* title picks up the column accent color */
+  letter-spacing: 0.08em;
   color: var(--col-color);
 }
 
 .column__count {
   font-size: 11px;
   font-weight: 600;
-  /* badge tinted with the column color */
   color: var(--col-color);
   background: color-mix(in srgb, var(--col-color) 14%, transparent);
   border: 1px solid color-mix(in srgb, var(--col-color) 28%, transparent);
   padding: 1px 8px;
   border-radius: 20px;
 }
-/* WIP full state overrides to danger regardless of column */
 .column__count--full {
   background: var(--danger-bg);
   color: var(--danger);
   border-color: rgba(248,81,73,0.3);
 }
 
+/* cards area — scrolls independently if column overflows */
 .column__cards {
-  padding: 10px 10px 14px;
+  padding: 10px 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
+/* dashed drop zone when column is empty */
 .column__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px;
+  border: 1.5px dashed color-mix(in srgb, var(--col-color) 25%, var(--border));
+  border-radius: 10px;
+  color: color-mix(in srgb, var(--col-color) 40%, var(--text-secondary));
   font-size: 12px;
-  color: var(--text-secondary);
+  font-weight: 400;
+  opacity: 0.6;
+  transition: opacity 0.2s, border-color 0.2s;
+  min-height: 80px;
+  padding: 20px;
   text-align: center;
-  margin: 16px 0;
-  opacity: 0.4;
+}
+.column--drag-over .column__empty {
+  opacity: 1;
+  border-color: var(--col-color);
+  background: color-mix(in srgb, var(--col-color) 5%, transparent);
+}
+
+/* custom scrollbar inside column cards */
+.column__cards::-webkit-scrollbar { width: 3px; }
+.column__cards::-webkit-scrollbar-track { background: transparent; }
+.column__cards::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 2px;
 }
 
 /* ── WIP progress bar ─────────────────────────────────────────────────────── */

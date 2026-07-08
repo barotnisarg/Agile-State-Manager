@@ -120,7 +120,23 @@ export default function App() {
   return (
     <div className="app">
       <nav className="navbar">
-        <h1 className="navbar__title">Agile State Manager</h1>
+        <h1 className="navbar__title">
+          {/* inline SVG logo mark — matches the favicon exactly */}
+          <svg className="navbar__logo" width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="navG" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stopColor="#58a6ff"/>
+                <stop offset="100%" stopColor="#a371f7"/>
+              </linearGradient>
+            </defs>
+            <rect width="32" height="32" rx="7" fill="url(#navG)"/>
+            <rect x="5"  y="5"  width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
+            <rect x="17" y="5"  width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
+            <rect x="5"  y="17" width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
+            <rect x="17" y="17" width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
+          </svg>
+          Agile State Manager
+        </h1>
 
         <div className="navbar__search-area">
           {/* Search input */}
