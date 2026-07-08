@@ -1,11 +1,30 @@
 // src/App.jsx
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useDrag } from './hooks/useDrag';
 import { COLUMNS, PRIORITIES } from './utils/taskUtils';
 import Column from './components/Column';
 import TaskModal from './components/TaskModal';
 import Toast from './components/Toast';
+
+// ── Theme hook ────────────────────────────────────────────────────────────────
+function useTheme() {
+  const [isDark, setIsDark] = useState(() => {
+    // 1. Prefer stored preference
+    const stored = localStorage.getItem('agile-theme');
+    if (stored) return stored === 'dark';
+    // 2. Fall back to OS preference
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('agile-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
+
+  const toggle = useCallback(() => setIsDark((d) => !d), []);
+  return { isDark, toggle };
+}
 
 // ── Stats bar ─────────────────────────────────────────────────────────────────
 function StatsBar({ tasks }) {
@@ -60,6 +79,7 @@ function StatsBar({ tasks }) {
 export default function App() {
   const { tasks, toast, addTask, editTask, deleteTask, advanceTask, dropTask } = useTasks();
   const { setColumnRef, dragOverCol, getDragProps } = useDrag(COLUMNS, dropTask);
+  const { isDark, toggle: toggleTheme } = useTheme();
 
   // modal state: null = closed | 'add' = adding | task object = editing
   const [modalState, setModalState] = useState(null);
@@ -136,9 +156,24 @@ export default function App() {
           </div>
         </div>
 
-        <button className="btn-primary" onClick={openAddModal}>
-          + Add Task
-        </button>
+        <div className="navbar__right">
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={isDark ? 'Light mode' : 'Dark mode'}
+          >
+            <span className="theme-toggle__track">
+              <span className="theme-toggle__thumb">
+                {isDark ? '🌙' : '☀️'}
+              </span>
+            </span>
+          </button>
+
+          <button className="btn-primary" onClick={openAddModal}>
+            + Add Task
+          </button>
+        </div>
       </nav>
 
       {/* Stats dashboard — always visible, reflects all tasks (not filtered) */}

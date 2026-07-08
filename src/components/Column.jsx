@@ -3,6 +3,37 @@ import React from 'react';
 import TaskCard from './TaskCard';
 import { COLUMN_LABELS, WIP_LIMITS } from '../utils/taskUtils';
 
+// ── WIP progress bar — only renders for columns that have a limit ─────────────
+function WipBar({ count, limit }) {
+  const pct     = Math.min(count / limit, 1) * 100;
+  const isFull  = count >= limit;
+  const isOver  = count > limit;   // shouldn't happen but defensive
+
+  return (
+    <div className="wip-bar" aria-label={`${count} of ${limit} slots used`}>
+      <div className="wip-bar__track">
+        {/* filled portion */}
+        <div
+          className={`wip-bar__fill ${isFull ? 'wip-bar__fill--full' : ''}`}
+          style={{ width: `${pct}%` }}
+        />
+        {/* segment dividers — one per slot */}
+        {Array.from({ length: limit - 1 }, (_, i) => (
+          <div
+            key={i}
+            className="wip-bar__segment"
+            style={{ left: `${((i + 1) / limit) * 100}%` }}
+          />
+        ))}
+      </div>
+      <span className={`wip-bar__label ${isFull ? 'wip-bar__label--full' : ''}`}>
+        {isFull ? (isOver ? 'Over limit' : 'Full') : `${limit - count} slot${limit - count !== 1 ? 's' : ''} free`}
+      </span>
+    </div>
+  );
+}
+
+// ── Column ────────────────────────────────────────────────────────────────────
 export default function Column({ columnId, tasks, onAdvance, onEdit, onDelete, isDragOver, columnRef, getDragProps }) {
   const limit = WIP_LIMITS[columnId];
   const count = tasks.length;
@@ -10,6 +41,7 @@ export default function Column({ columnId, tasks, onAdvance, onEdit, onDelete, i
   return (
     <div
       ref={columnRef}
+      data-column={columnId}
       className={`column ${isDragOver ? 'column--drag-over' : ''}`}
     >
       <div className="column__header">
@@ -20,6 +52,9 @@ export default function Column({ columnId, tasks, onAdvance, onEdit, onDelete, i
           </span>
         </div>
       </div>
+
+      {/* WIP bar — only shown for columns with a defined limit */}
+      {limit && <WipBar count={count} limit={limit} />}
 
       <div className="column__cards">
         {tasks.length === 0 && (
