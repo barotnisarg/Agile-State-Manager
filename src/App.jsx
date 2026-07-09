@@ -121,19 +121,34 @@ export default function App() {
     <div className="app">
       <nav className="navbar">
         <h1 className="navbar__title">
-          {/* inline SVG logo mark — matches the favicon exactly */}
-          <svg className="navbar__logo" width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <svg className="navbar__logo" width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <defs>
-              <linearGradient id="navG" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                <stop offset="0%"   stopColor="#58a6ff"/>
-                <stop offset="100%" stopColor="#a371f7"/>
+              <linearGradient id="navBg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"  stopColor="#1a2540"/>
+                <stop offset="100%" stopColor="#0d1117"/>
               </linearGradient>
             </defs>
-            <rect width="32" height="32" rx="7" fill="url(#navG)"/>
-            <rect x="5"  y="5"  width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
-            <rect x="17" y="5"  width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
-            <rect x="5"  y="17" width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
-            <rect x="17" y="17" width="10" height="10" rx="2.5" fill="white" opacity="0.95"/>
+            <rect width="64" height="64" rx="13" fill="url(#navBg)"/>
+            <rect width="64" height="64" rx="13" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1"/>
+            {/* Col 1 — blue */}
+            <rect x="8"   y="10" width="15" height="6"  rx="2"   fill="#58a6ff" opacity="0.95"/>
+            <rect x="8"   y="18" width="15" height="12" rx="2.5" fill="#1a2a40"/>
+            <rect x="9.5" y="19.5" width="3" height="9"  rx="1.5" fill="#58a6ff" opacity="0.9"/>
+            <rect x="8"   y="32" width="15" height="12" rx="2.5" fill="#1a2a40"/>
+            <rect x="9.5" y="33.5" width="3" height="9"  rx="1.5" fill="#58a6ff" opacity="0.7"/>
+            <rect x="8"   y="46" width="15" height="9"  rx="2.5" fill="#1a2a40" opacity="0.7"/>
+            <rect x="9.5" y="47.5" width="3" height="6"  rx="1.5" fill="#58a6ff" opacity="0.4"/>
+            {/* Col 2 — amber */}
+            <rect x="25"  y="10" width="15" height="6"  rx="2"   fill="#d29922" opacity="0.95"/>
+            <rect x="25"  y="18" width="15" height="12" rx="2.5" fill="#2a2010"/>
+            <rect x="26.5" y="19.5" width="3" height="9"  rx="1.5" fill="#d29922" opacity="0.9"/>
+            <rect x="25"  y="32" width="15" height="12" rx="2.5" fill="#2a2010"/>
+            <rect x="26.5" y="33.5" width="3" height="9"  rx="1.5" fill="#d29922" opacity="0.7"/>
+            {/* Col 3 — green + checkmark */}
+            <rect x="42"  y="10" width="15" height="6"  rx="2"   fill="#3fb950" opacity="0.95"/>
+            <rect x="42"  y="18" width="15" height="12" rx="2.5" fill="#0f2a14"/>
+            <rect x="43.5" y="19.5" width="3" height="9"  rx="1.5" fill="#3fb950" opacity="0.9"/>
+            <path d="M46 25 L49 29 L56 21" stroke="#3fb950" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           Agile State Manager
         </h1>

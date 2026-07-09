@@ -112,15 +112,22 @@ body {
   gap: 9px;
 }
 
-/* inline SVG logo — drop shadow so it pops off dark and light backgrounds */
+/* inline SVG kanban board logo */
 .navbar__logo {
   flex-shrink: 0;
-  filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.45));
-  transition: filter 0.2s, transform 0.2s;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 2px 12px rgba(0,0,0,0.5),
+    0 0 20px rgba(88,166,255,0.2);
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 .navbar__title:hover .navbar__logo {
-  filter: drop-shadow(0 0 12px rgba(163, 113, 247, 0.6));
-  transform: rotate(-4deg) scale(1.08);
+  box-shadow:
+    0 0 0 1px rgba(88,166,255,0.3),
+    0 4px 20px rgba(0,0,0,0.5),
+    0 0 28px rgba(88,166,255,0.35);
+  transform: rotate(-3deg) scale(1.07);
 }
 
 /* right-side group: toggle + add button */
