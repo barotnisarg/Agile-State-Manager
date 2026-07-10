@@ -52,21 +52,61 @@ body,
     box-shadow       0.25s ease;
 }
 
+/* ── CSS variables for the dot grid (theme-aware) ───────────────────────── */
+:root,
+[data-theme="dark"] {
+  --dot-color: rgba(255, 255, 255, 0.1);   /* more visible */
+  --dot-size:  1.5px;
+  --dot-gap:   24px;                        /* tighter grid */
+}
+
+[data-theme="light"] {
+  --dot-color: rgba(0, 0, 0, 0.1);
+  --dot-size:  1.5px;
+  --dot-gap:   24px;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  background-image:
-    radial-gradient(ellipse 70% 60% at 15% 0%,   rgba(88,166,255,0.08)  0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 85% 90%,   rgba(163,113,247,0.07) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 50% 50%,   rgba(63,185,80,0.03)   0%, transparent 60%);
-  background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
   font-size: 14px;
   line-height: 1.5;
+
+  background-color: var(--bg);
+  background-image:
+    /* ── color glows — stronger so they contrast the grid ── */
+    radial-gradient(ellipse 65% 55% at 10%  0%,  rgba(88, 166,255,0.13)  0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 90% 95%,  rgba(163,113,247,0.11)  0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 50% 50%,  rgba(63, 185, 80,0.04)  0%, transparent 65%),
+    /* ── crosshair lines through the center ── */
+    linear-gradient(rgba(88,166,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,166,255,0.04) 1px, transparent 1px),
+    /* ── dot grid (bottom layer) ── */
+    radial-gradient(circle, var(--dot-color) var(--dot-size), transparent var(--dot-size));
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 120px,          /* wide horizontal stripes */
+    120px 100%,          /* wide vertical stripes */
+    var(--dot-gap) var(--dot-gap);
+  background-position:
+    0 0, 0 0, 0 0,
+    center center,
+    center center,
+    0 0;
+  background-attachment: fixed;
 }
 
-/* ── Navbar ───────────────────────────────────────────────────────────────── */
+/* light mode — column glass effect uses white base */
+[data-theme="light"] .column {
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.03) 0%, transparent 18%, transparent 82%, rgba(0,0,0,0.03) 100%),
+    linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.04) 100%),
+    linear-gradient(to bottom, var(--col-color-glow) 0%, transparent 38%),
+    rgba(255, 255, 255, 0.65);
+}
 .navbar {
   display: flex;
   align-items: center;
@@ -448,40 +488,100 @@ body {
 }
 
 /* ── Column accent palette ────────────────────────────────────────────────── */
-/* Each column gets a CSS custom property --col-color set via data-column.
-   Everything — header top bar, title, count badge, drag-over glow — reads
-   from this single variable so adding a new column means one new rule. */
-
-[data-column="backlog"]    { --col-color: #58a6ff; --col-color-bg: rgba(88,166,255,0.07);  }
-[data-column="inProgress"] { --col-color: #d29922; --col-color-bg: rgba(210,153,34,0.07);  }
-[data-column="inReview"]   { --col-color: #a371f7; --col-color-bg: rgba(163,113,247,0.07); }
-[data-column="done"]       { --col-color: #3fb950; --col-color-bg: rgba(63,185,80,0.07);   }
-[data-column="blocked"]    { --col-color: #f85149; --col-color-bg: rgba(248,81,73,0.07);   }
+[data-column="backlog"]    {
+  --col-color:     #58a6ff;
+  --col-color-bg:  rgba(88,166,255,0.07);
+  --col-color-glow:rgba(88,166,255,0.09);
+}
+[data-column="inProgress"] {
+  --col-color:     #d29922;
+  --col-color-bg:  rgba(210,153,34,0.07);
+  --col-color-glow:rgba(210,153,34,0.09);
+}
+[data-column="inReview"]   {
+  --col-color:     #a371f7;
+  --col-color-bg:  rgba(163,113,247,0.07);
+  --col-color-glow:rgba(163,113,247,0.09);
+}
+[data-column="done"]       {
+  --col-color:     #3fb950;
+  --col-color-bg:  rgba(63,185,80,0.07);
+  --col-color-glow:rgba(63,185,80,0.09);
+}
+[data-column="blocked"]    {
+  --col-color:     #f85149;
+  --col-color-bg:  rgba(248,81,73,0.07);
+  --col-color-glow:rgba(248,81,73,0.09);
+}
 
 /* ── Column ───────────────────────────────────────────────────────────────── */
 .column {
-  flex: 1 1 0;              /* equal width, all 5 columns share the space */
-  min-width: 200px;         /* don't shrink below this before scrolling */
-  background: var(--surface);
-  backdrop-filter: blur(12px);
+  flex: 1 1 0;
+  min-width: 200px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
   border-radius: 14px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
   border-top: 2px solid var(--col-color);
+
+  /* ── Inner depth layers (bottom → top) ──────────────────────────────────
+     1. base glass: dark semi-transparent background
+     2. top glow: colour bleeds down from the header accent bar
+     3. bottom fade: deepens toward the bottom so cards "float" visually
+     4. left+right edge vignette: centres focus on the card content
+  ────────────────────────────────────────────────────────────────────── */
+  background:
+    /* left+right edge vignette */
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0.08) 0%,
+      transparent      18%,
+      transparent      82%,
+      rgba(0,0,0,0.08) 100%
+    ),
+    /* bottom fade to deepen the column floor */
+    linear-gradient(
+      to bottom,
+      transparent 55%,
+      rgba(0,0,0,0.18) 100%
+    ),
+    /* top colour glow bleeding down from the accent bar */
+    linear-gradient(
+      to bottom,
+      var(--col-color-glow) 0%,
+      transparent 38%
+    ),
+    /* base dark glass */
+    rgba(22, 27, 34, 0.62);
+
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--col-color) 20%, transparent),
-    0 2px 8px rgba(0,0,0,0.2);
+    /* outer drop shadow */
+    0 2px 12px rgba(0,0,0,0.25),
+    /* inner top highlight — thin line just below the accent bar */
+    inset 0 1px 0 color-mix(in srgb, var(--col-color) 30%, transparent),
+    /* inner left+right colour rim */
+    inset  1px 0 28px -12px color-mix(in srgb, var(--col-color) 12%, transparent),
+    inset -1px 0 28px -12px color-mix(in srgb, var(--col-color) 12%, transparent);
 }
 
 .column--drag-over {
   border-color: var(--col-color);
   box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--col-color) 35%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--col-color) 40%, transparent),
     0 8px 32px rgba(0,0,0,0.35),
-    inset 0 1px 0 color-mix(in srgb, var(--col-color) 30%, transparent);
+    inset 0 1px 0 color-mix(in srgb, var(--col-color) 40%, transparent),
+    inset  1px 0 40px -10px color-mix(in srgb, var(--col-color) 18%, transparent),
+    inset -1px 0 40px -10px color-mix(in srgb, var(--col-color) 18%, transparent);
+  /* intensify the top glow on drag-over */
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.08) 0%, transparent 18%, transparent 82%, rgba(0,0,0,0.08) 100%),
+    linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.18) 100%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--col-color-glow) 220%, transparent) 0%, transparent 45%),
+    rgba(22, 27, 34, 0.68);
 }
 
 .column__header {
@@ -490,7 +590,7 @@ body {
   justify-content: space-between;
   padding: 14px 16px 11px;
   border-bottom: 1px solid var(--border);
-  background: var(--col-color-bg);
+  background: color-mix(in srgb, var(--col-color-bg) 70%, transparent);
   border-radius: 12px 12px 0 0;
   flex-shrink: 0;
 }
@@ -529,31 +629,94 @@ body {
   overflow-x: hidden;
 }
 
-/* dashed drop zone when column is empty */
+/* ── Empty state ──────────────────────────────────────────────────────────── */
+@keyframes empty-float {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-5px); }
+}
+
+@keyframes empty-appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
 .column__empty {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin: 8px;
-  border: 1.5px dashed color-mix(in srgb, var(--col-color) 25%, var(--border));
-  border-radius: 10px;
-  color: color-mix(in srgb, var(--col-color) 40%, var(--text-secondary));
-  font-size: 12px;
-  font-weight: 400;
-  opacity: 0.6;
-  transition: opacity 0.2s, border-color 0.2s;
-  min-height: 80px;
-  padding: 20px;
+  gap: 10px;
+  margin: 10px;
+  border: 1.5px dashed color-mix(in srgb, var(--col-color) 30%, var(--border));
+  border-radius: 12px;
+  padding: 28px 16px;
   text-align: center;
+  animation: empty-appear 0.3s ease both;
+  transition: border-color 0.2s, background 0.2s;
+  /* faint radial glow behind the illustration */
+  background: radial-gradient(
+    ellipse 70% 50% at 50% 40%,
+    color-mix(in srgb, var(--col-color) 6%, transparent) 0%,
+    transparent 70%
+  );
 }
-.column--drag-over .column__empty {
-  opacity: 1;
+
+/* icon — colored, gently floating */
+.column__empty-icon {
+  color: color-mix(in srgb, var(--col-color) 55%, var(--text-secondary));
+  opacity: 0.75;
+  animation: empty-float 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--col-color) 35%, transparent));
+  line-height: 0;
+}
+
+.column__empty-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--col-color) 70%, var(--text-secondary));
+  letter-spacing: 0.01em;
+}
+
+.column__empty-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  line-height: 1.4;
+  max-width: 140px;
+}
+
+/* drag-over state — lights up the drop zone */
+.column__empty--drag-over {
   border-color: var(--col-color);
-  background: color-mix(in srgb, var(--col-color) 5%, transparent);
+  border-style: solid;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    color-mix(in srgb, var(--col-color) 12%, transparent) 0%,
+    transparent 70%
+  );
 }
+.column__empty--drag-over .column__empty-icon {
+  opacity: 1;
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--col-color) 60%, transparent));
+  animation: none;       /* stop float so it feels stable as a target */
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
+.column__empty--drag-over .column__empty-label {
+  color: var(--col-color);
+}
+
+.column__empty-drop-cue {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--col-color);
+  letter-spacing: 0.03em;
+  animation: empty-float 0.8s ease-in-out infinite;
+}
+
+
 
 /* custom scrollbar inside column cards */
 .column__cards::-webkit-scrollbar { width: 3px; }
