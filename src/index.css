@@ -1233,20 +1233,30 @@ body {
     flex-direction: column;
     padding: 12px;
     gap: 10px;
-    overflow-x: visible;  /* no horizontal scroll needed when stacked */
+    overflow-x: visible;
+    overflow-y: auto;          /* allow the stacked columns to scroll */
+    height: auto;              /* release the fixed viewport height */
     min-height: unset;
+    align-items: stretch;
   }
 
   .column {
-    flex: 0 0 auto;       /* release the fixed 240px width */
-    width: 100%;          /* fill viewport */
-    min-height: unset;    /* don't force tall empty columns */
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;              /* release the stretch height from desktop */
+    min-height: unset;
   }
 
-  /* Collapse empty columns to a slim strip so they don't eat screen space */
-  .column:has(.column__empty:only-child) .column__cards {
-    padding-top: 6px;
-    padding-bottom: 6px;
+  /* Empty columns: shrink the drop zone so they don't eat screen space */
+  .column__empty {
+    min-height: 64px;
+    padding: 14px 16px;
+    flex: 0 0 auto;
+  }
+
+  /* Hide the float animation on mobile — saves battery, reduces distraction */
+  .column__empty-icon {
+    animation: none;
   }
 
   /* ── Modal: bottom-sheet style on mobile ── */
